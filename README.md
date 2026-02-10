@@ -70,3 +70,12 @@ async def t():
 asyncio.run(t())
 EOF
 ```
+
+## Test schema
+
+```
+python - << 'EOF'
+from app.schemas.tag import TagCreate
+print(TagCreate.model_json_schema())
+EOF
+```
