@@ -7,8 +7,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install fastapi uvicorn python-dotenv
-python -m pip install asyncpg
-python -m pip install psycopg2-binary
+python -m pip install asyncpg psycopg2-binary datetime
 ```
 
 ## Run app

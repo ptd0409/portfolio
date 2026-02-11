@@ -14,8 +14,6 @@ ENV/
 env/
 
 .env
-.env.*
-!.env.example
 
 *.log
 

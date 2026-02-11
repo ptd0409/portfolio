@@ -7,7 +7,7 @@ Lang = Literal["en", "vi"]
 class BaseSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True, extra="ignore")
 
-class TimestampMixin(BaseModel):
+class TimestampMixin(BaseSchema):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -24,7 +24,8 @@ class PaginationMeta(BaseSchema):
     total_items: int = 0
     total_pages: int = 0
 
-class PaginateResponse(ApiResponse[List[T]]):
+class Page(BaseSchema, Generic[T]):
+    items: List[T] = Field(default_factory=list)
     meta: PaginationMeta
 
 class ErrorResponse(BaseSchema):
