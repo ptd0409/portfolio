@@ -27,6 +27,6 @@ class TagUpdate(BaseSchema):
 class TagRead(TagBase, IDSchema, TimestampMixin):
     translations: List[TagTranslationRead] = []
 
-class TagSimple(BaseSchema):
-    id: int
-    name: str
+class TagSimple(BaseSchema, IDSchema):
+    slug: str
+    name: str = Field(..., description="Translated name or fallback slug")
