@@ -78,3 +78,9 @@ from app.schemas.tag import TagCreate
 print(TagCreate.model_json_schema())
 EOF
 ```
+
+## Test URL
+
+```
+curl -v -X POST "http://127.0.0.1:8000/api/v1/projects/"   -H "Content-Type: application/json"   --data-binary @payload.json
+```

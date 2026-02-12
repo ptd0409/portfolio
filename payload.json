@@ -1,0 +1,19 @@
+{
+  "slug": "portfolio-fastapi",
+  "status": "published",
+  "translations": [
+    {
+      "lang": "vi",
+      "title": "Dự án FastAPI",
+      "summary": "Demo",
+      "content_markdown": "# Hello"
+    },
+    {
+      "lang": "en",
+      "title": "FastAPI Project",
+      "summary": "Demo",
+      "content_markdown": "# Hello"
+    }
+  ],
+  "tag_ids": [1, 2]
+}
