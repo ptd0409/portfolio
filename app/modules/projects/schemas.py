@@ -61,3 +61,19 @@ class ProjectDetail(ProjectListItem):
 class ProjectRead(ProjectBase, IDSchema, TimestampMixin):
     translations: List[ProjectTranslationRead] = Field(default_factory=list)
     tags: List[TagSimple] = Field(default_factory=list)
+
+class ProjectTranslationIn(BaseSchema):
+    lang: Lang
+    title: str
+    summary: str
+    content_markdown: str
+
+class ProjectUpdate(BaseSchema):
+    slug: Optional[str] = Field(default=None, min_length=1)
+    cover_image_url: Optional[str] = None
+    repo_url: Optional[str] = None
+    demo_url: Optional[str] = None
+    status: Optional[str] = None
+    published_at: Optional[str] = None
+    translations: Optional[List[ProjectTranslationIn]] = None
+    tag_ids: Optional[List[int]] = None

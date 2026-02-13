@@ -6,5 +6,5 @@ class Tag(Base):
     __tablename__ = "tags"
     id = Column(Integer, primary_key=True, index=True)
     slug = Column(String, unique=True, index=True, nullable=False)
-    tag_translations = relationship("TagTranslation", back_populates="tag")
+    tag_translations = relationship("TagTranslation", back_populates="tag", cascade="all, delete-orphan", lazy="selectin")
     projects = relationship("Project", secondary="project_tags", back_populates="tags")

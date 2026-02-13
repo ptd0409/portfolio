@@ -1,6 +1,5 @@
 # app/api/v1/router.py
 from fastapi import APIRouter
-
 from app.modules.projects.router import router as projects_router
 from app.modules.tags.router import router as tags_router
 
