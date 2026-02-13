@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.deps import get_db
 from app.schemas.common import Lang, ApiResponse, Page
-from app.schemas.project import ProjectListItem, ProjectDetail, ProjectCreate, ProjectRead
-from app.crud.project import get_project_by_slug, list_projects_paginated_v2, create_project
+from app.modules.projects.schemas import ProjectListItem, ProjectDetail, ProjectCreate, ProjectRead
+from app.modules.projects.repository import get_project_by_slug, list_projects_paginated_v2, create_project
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 

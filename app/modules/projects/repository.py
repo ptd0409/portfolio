@@ -5,14 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.common import Lang, PaginationMeta, Page
 
-from app.schemas.project import ProjectListItem, ProjectDetail, ProjectCreate, ProjectRead, ProjectTranslationRead
-from app.schemas.tag import TagSimple
+from app.modules.projects.schemas import ProjectListItem, ProjectDetail, ProjectCreate, ProjectRead, ProjectTranslationRead
+from app.modules.tags.schemas import TagSimple
 from app.models.project import Project
 from app.models.project_translation import ProjectTranslation
 from app.models.tag import Tag
 from app.models.project_tag import ProjectTag
 from app.models.tag_translation import TagTranslation
-from app.schemas.tag import TagSimple
 
 async def list_projects(db: AsyncSession, lang: Lang, status: str | None = "published") -> List[ProjectListItem]:
     stmt = (

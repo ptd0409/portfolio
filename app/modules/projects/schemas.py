@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 from pydantic import Field
 from app.schemas.common import BaseSchema, TimestampMixin, Lang, IDSchema
-from app.schemas.tag import TagSimple
+from app.modules.tags.schemas import TagSimple
 
 class ProjectTranslationBase(BaseSchema):
     lang: Lang = Field(..., example="vi")

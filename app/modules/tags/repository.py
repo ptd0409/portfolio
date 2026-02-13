@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.common import Lang
-from app.schemas.tag import TagSimple
+from app.modules.tags.schemas import TagSimple
 from app.models.tag import Tag
 from app.models.tag_translation import TagTranslation
 
