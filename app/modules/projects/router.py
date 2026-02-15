@@ -10,8 +10,10 @@ from app.modules.projects.repository import (
     get_project_by_slug,
     list_projects_paginated_v3,
     create_project,
-    update_project_by_slug
+    update_project_by_slug,
+    delete_project_by_slug
 )
+from app.core.security import require_admin
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -53,6 +55,30 @@ async def projects_list(
     )
     return ApiResponse(data=page_obj)
 
+@router.get("/admin", response_model=ApiResponse[Page[ProjectListItem]], dependencies=[Depends(require_admin)])
+async def projects_admin_list(
+    lang: Lang = Query("vi"),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=100),
+    status: Optional[str] = Query(None),  # None = all
+    q: Optional[str] = Query(None, min_length=1),
+    tag_ids: Optional[str] = Query(None),
+    db: AsyncSession = Depends(get_db),
+):
+    ids: Optional[List[int]] = None
+    if tag_ids:
+        ids = [int(x) for x in tag_ids.split(",") if x.strip().isdigit()]
+
+    page_obj = await list_projects_paginated_v3(
+        db=db,
+        lang=lang,
+        page=page,
+        page_size=page_size,
+        status=status,   # None => all
+        q=q,
+        tag_ids=ids,
+    )
+    return ApiResponse(data=page_obj)
 
 @router.get("/{slug}", response_model=ApiResponse[ProjectDetail])
 async def project_detail(
@@ -79,3 +105,16 @@ async def project_update(
         return ApiResponse(data=updated)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.delete("/{slug}", response_model=ApiResponse[bool])
+async def project_delete(
+    slug: str,
+    db: AsyncSession = Depends(get_db),
+):
+    ok = await delete_project_by_slug(db, slug)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    return ApiResponse(data=True)
+
+

@@ -631,3 +631,25 @@ async def update_project_by_slug(
         translations=translations_read,
         tags=tags,
     )
+
+async def delete_project_by_slug(db: AsyncSession, slug: str) -> bool:
+    project = await db.execute(
+        select(Project).where(Project.slug == slug)
+    )
+    project_obj = project.scalar_one_or_none()
+
+    if not project_obj:
+        return False
+
+    await db.execute(
+        delete(ProjectTag).where(ProjectTag.project_id == project_obj.id)
+    )
+
+    await db.execute(
+        delete(ProjectTranslation).where(ProjectTranslation.project_id == project_obj.id)
+    )
+
+    await db.delete(project_obj)
+
+    await db.commit()
+    return True

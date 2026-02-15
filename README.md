@@ -84,3 +84,10 @@ EOF
 ```
 curl -v -X POST "http://127.0.0.1:8000/api/v1/projects/"   -H "Content-Type: application/json"   --data-binary @payload.json
 ```
+
+## Restart API
+
+```
+docker compose up -d --build
+docker compose restart api
+```
