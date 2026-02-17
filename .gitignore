@@ -40,3 +40,6 @@ Thumbs.db
 
 *.tar
 docker-compose.override.yml
+
+package-lock.json
+package.json

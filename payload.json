@@ -1,19 +1,22 @@
 {
-  "slug": "portfolio-fastapi",
+  "slug": "devops-project-2",
   "status": "published",
+  "cover_image_url": null,
+  "repo_url": "https://github.com/yourname/devops-project-2",
+  "demo_url": "https://example.com",
   "translations": [
     {
       "lang": "vi",
-      "title": "Dự án FastAPI",
-      "summary": "Demo",
-      "content_markdown": "# Hello"
+      "title": "Dự án DevOps 2",
+      "summary": "Pipeline CI/CD với Docker + GitHub Actions",
+      "content_markdown": "# DevOps Project 2\n\nNội dung dự án bằng tiếng Việt."
     },
     {
       "lang": "en",
-      "title": "FastAPI Project",
-      "summary": "Demo",
-      "content_markdown": "# Hello"
+      "title": "DevOps Project 2",
+      "summary": "CI/CD pipeline with Docker + GitHub Actions",
+      "content_markdown": "# DevOps Project 2\n\nEnglish project content."
     }
   ],
-  "tag_ids": [1, 2]
+  "tag_ids": []
 }

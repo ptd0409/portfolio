@@ -8,6 +8,8 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install fastapi uvicorn python-dotenv
 python -m pip install asyncpg psycopg2-binary datetime
+pip install python-jose[cryptography] passlib[bcrypt]
+
 ```
 
 ## Run app
@@ -90,4 +92,10 @@ curl -v -X POST "http://127.0.0.1:8000/api/v1/projects/"   -H "Content-Type: app
 ```
 docker compose up -d --build
 docker compose restart api
+```
+
+## Check log
+
+```
+docker compose logs -f
 ```

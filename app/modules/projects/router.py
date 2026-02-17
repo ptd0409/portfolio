@@ -13,7 +13,7 @@ from app.modules.projects.repository import (
     update_project_by_slug,
     delete_project_by_slug
 )
-from app.core.security import require_admin
+from app.api.deps import require_admin
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 

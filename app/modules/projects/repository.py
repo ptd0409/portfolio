@@ -1,4 +1,5 @@
 import math
+from datetime import datetime, timezone
 from typing import List, Tuple, Dict, Optional
 from sqlalchemy import select, func, or_, delete
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -56,6 +57,7 @@ async def list_projects(db: AsyncSession, lang: Lang, status: str | None = "publ
             items_by_id[pid].tags.append(
                 TagSimple(
                     id=tag.id,
+                    slug=tag.slug,
                     name=tag_name or tag.slug,
                 )
             )
@@ -85,7 +87,7 @@ async def get_project_by_slug(db: AsyncSession, slug: str, lang: Lang, status: s
     seen = set()
     for _, _, tag, tag_tr in rows:
         if tag and tag.id not in seen:
-            tags.append(TagSimple(id=tag.id, name=(tag_tr.name if tag_tr else None) or tag.slug))
+            tags.append(TagSimple(id=tag.id, slug=tag.slug, name=(tag_tr.name if tag_tr else None) or tag.slug))
             seen.add(tag.id)
 
     return ProjectDetail(
@@ -159,7 +161,7 @@ async def list_projects_paginated(
 
         if tag is not None and tag.id not in seen_tags[pid]:
             tag_name = (getattr(tag_tr, "name", None) if tag_tr is not None else None) or tag.slug
-            items_by_id[pid].tags.append(TagSimple(id=tag.id, name=tag_name))
+            items_by_id[pid].tags.append(TagSimple(id=tag.id, slug=tag.slug, name=tag_name))
             seen_tags[pid].add(tag.id)
 
     meta = PaginationMeta(
@@ -255,6 +257,7 @@ async def list_projects_paginated_v2(
                 items_by_id[pid].tags.append(
                     TagSimple(
                         id=tag.id,
+                        slug=tag.slug,
                         name=((tag_tr.name if tag_tr else None) or tag.slug)
                     )
                 )
@@ -291,6 +294,10 @@ async def create_project(db: AsyncSession, payload: ProjectCreate) -> ProjectRea
         tag_count = await db.execute(select(func.count(Tag.id)).where(Tag.id.in_(tag_ids)))
         if tag_count.scalar_one() != len(tag_ids):
             raise ValueError("Some tag_ids do not exist")
+        
+    published_at = None
+    if payload.status == "published":
+        published_at = datetime.now(timezone.utc)
     
     project = Project(
         slug=payload.slug,
@@ -328,7 +335,7 @@ async def create_project(db: AsyncSession, payload: ProjectCreate) -> ProjectRea
         tag_rows = (await db.execute(select(Tag).where(Tag.id.in_(tag_ids)))).scalars().all()
         order = {tid: i for i, tid in enumerate(tag_ids)}
         tag_rows.sort(key=lambda t: order.get(t.id, 10**9))
-        tags = [TagSimple(id=t.id, name=t.slug) for t in tag_rows]
+        tags = [TagSimple(id=t.id, slug=t.slug, name=t.slug) for t in tag_rows]
 
     translations_read = [
         ProjectTranslationRead(
@@ -526,16 +533,23 @@ async def update_project_by_slug(
     if not project:
         return None
 
-    if payload.slug is not None:
-        new_slug = payload.slug.strip()
-        if not new_slug:
-            raise ValueError("slug must not be empty")
+    if payload.status is not None:
+        project.status = payload.status
+    if payload.status == "published" and project.published_at is None:
+        project.published_at = datetime.now(timezone.utc)
+    if payload.status != "published":
+        project.published_at = None
 
-        if new_slug != project.slug:
-            existed = await db.execute(select(Project.id).where(Project.slug == new_slug))
-            if existed.scalar_one_or_none() is not None:
-                raise ValueError("slug already exists")
-            project.slug = new_slug
+    # if payload.slug is not None:
+    #     new_slug = payload.slug.strip()
+    #     if not new_slug:
+    #         raise ValueError("slug must not be empty")
+
+    #     if new_slug != project.slug:
+    #         existed = await db.execute(select(Project.id).where(Project.slug == new_slug))
+    #         if existed.scalar_one_or_none() is not None:
+    #             raise ValueError("slug already exists")
+    #         project.slug = new_slug
 
     if payload.cover_image_url is not None:
         project.cover_image_url = payload.cover_image_url
